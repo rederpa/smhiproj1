@@ -36,12 +36,18 @@ def collect_weather(url):
     else:
         #print(resp.status_code)
 
-        currentdate = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")#.date()
+        currentdate = datetime.datetime.today().strftime("%Y%m%d") #().strftime("%Y-%m-%d %H:%M:%S")
+        currenttime = datetime.datetime.time().strftime("%H%M%S")
         print currentdate
+        print currenttime
+        
         for timepoint in resp.json()['timeSeries']:
-            forecasttime = timepoint['validTime']
-            print forecasttime
-            print forecasttime > currentdate
+            forecasttimepoint = timepoint['validTime'].split('t',1)
+            print forecasttimepoint
+            forecastdate = forecasttimepoint[0]
+            forecasttime = forecasttimepoint[1]
+            print forecastdate
+            print forecastdate > currentdate
 
             #print time['parameters']
         #allParam = resp.json()['timeSeries'][0]['validTime']
