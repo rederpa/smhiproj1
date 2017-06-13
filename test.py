@@ -35,17 +35,17 @@ def collect_weather(url):
         raise ApiError('felblabbla') # hur funkar?
     else:
         #print(resp.status_code)
-
+#vill inte visa passerad tid
         currentdate = datetime.datetime.today().strftime("%Y%m%d") #().strftime("%Y-%m-%d %H:%M:%S")
         currenttime = datetime.datetime.time().strftime("%H%M%S")
         print currentdate
         print currenttime
         
         for timepoint in resp.json()['timeSeries']:
-            forecasttimepoint = timepoint['validTime'].split('t',1)
+            forecasttimepoint = timepoint['validTime'].split('t')
             print forecasttimepoint
-            forecastdate = forecasttimepoint[0]
-            forecasttime = forecasttimepoint[1]
+            forecastdate = int(forecasttimepoint[0].strip('t'))
+            forecasttime = int(forecasttimepoint[1].strip('z'))
             print forecastdate
             print forecastdate > currentdate
 
