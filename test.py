@@ -1,10 +1,10 @@
 import requests
 import datetime
 
-#get weather
-#print weather
-#...
-#profit
+# get weather
+# print weather
+# ...
+# profit
 
 # coord for HOME
 CATEGORY = 'pmp2g'
@@ -31,33 +31,33 @@ def collect_weather(url):
 
     resp = requests.get(url)
 
-    if resp.status_code != 200: #!=200 means status not ok
-        raise ApiError('felblabbla') # hur funkar?
+    if resp.status_code != 200:  # !=200 means status not ok
+        raise ApiError('felblabbla')  # hur funkar?
     else:
-        #print(resp.status_code)
-#vill inte visa passerad tid
-        currentdate = datetime.datetime.today().strftime("%Y%m%d") #().strftime("%Y-%m-%d %H:%M:%S")
-        currenttime = datetime.datetime.time().strftime("%H%M%S")
+        # print(resp.status_code)
+        # vill inte visa passerad tid
+        currentdate = int(datetime.datetime.today().strftime("%Y%m%d"))  # ().strftime("%Y-%m-%d %H:%M:%S")
+        currenttime = int(datetime.datetime.now().time().strftime("%H%M%S"))
         print currentdate
         print currenttime
-        
+
         for timepoint in resp.json()['timeSeries']:
-            forecasttimepoint = timepoint['validTime'].split('t')
-            print forecasttimepoint
-            forecastdate = int(forecasttimepoint[0].strip('t'))
-            forecasttime = int(forecasttimepoint[1].strip('z'))
+            forecasttimepoint = timepoint['validTime'].split('T')
+            #print forecasttimepoint
+            forecastdate = int(forecasttimepoint[0].strip('T').replace("-",""))
+            forecasttime = int(forecasttimepoint[1].strip('Z').replace(":",""))
             print forecastdate
             print forecastdate > currentdate
 
-            #print time['parameters']
-        #allParam = resp.json()['timeSeries'][0]['validTime']
-        #allParam = 1
-
+            # print time['parameters']
+            # allParam = resp.json()['timeSeries'][0]['validTime']
+            # allParam = 1
 
 
 def main():
-    url = API_URL+'/category/'+CATEGORY+'/version/'+VERSION+'/geotype/'+GEOTYPE+'/lon/'+LON+'/lat/'+LAT+'/data.json'
+    url = API_URL + '/category/' + CATEGORY + '/version/' + VERSION + '/geotype/' + GEOTYPE + '/lon/' + LON + '/lat/' + LAT + '/data.json'
 
     collect_weather(url)
+
 
 main()
