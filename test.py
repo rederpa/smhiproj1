@@ -38,21 +38,60 @@ def collect_weather(url):
         # vill inte visa passerad tid
         currentdate = int(datetime.datetime.today().strftime("%Y%m%d"))  # ().strftime("%Y-%m-%d %H:%M:%S")
         currenttime = int(datetime.datetime.now().time().strftime("%H%M%S"))
+        timeSeries = resp.json()['timeSeries']
+
+        print 'current date and time:'
         print currentdate
         print currenttime
+        print '--x--'
+        forecastdate = []
+        forecasttime = []
+        indRespStart = []
 
-        for timepoint in resp.json()['timeSeries']:
+        #print resp.json()['timeSeries']
+
+        for idx,timepoint in enumerate(timeSeries): #finds interval for which forecasts to look at
             forecasttimepoint = timepoint['validTime'].split('T')
-            #print forecasttimepoint
-            forecastdate = int(forecasttimepoint[0].strip('T').replace("-",""))
+            forecastdate = int(forecasttimepoint[0].strip('').replace("-",""))
             forecasttime = int(forecasttimepoint[1].strip('Z').replace(":",""))
-            print forecastdate
-            print forecastdate > currentdate
 
+            if forecastdate == currentdate:
+                if forecasttime > currenttime:
+                    #print 'hello'
+                    indRespStart = idx-1
+                    indRespEnd = idx+12 #indRespStart+10
+                    break
+
+        #print timeSeries[0]['parameters'][5]
+        list1 = []
+        dict1 = {"Date and Time":[], "Temperature":[],"Cloud coverage":[],"Precipitation":[]}
+
+
+        for indResp in range(indRespStart,indRespEnd):
+            for idx,param in enumerate(timeSeries[indResp]['parameters']):
+                #print timepoint
+                #param = timepoint['parameters']
+                if param['name'] == 't':
+                    dict1["Temperature"] = param['values']
+                    #indParam.append(idx)
+                if param['name'] == 'tcc_mean':
+                    dict1["Cloud coverage"] = param['values']
+                    #indParam.append(idx)
+                if param['name'] == 'pmean':
+                    dict1["Precipitation"] = param['values']
+                    #precipitation.append(param)
+                    #indParam.append(idx)
+            list1.append(dict1)
+            print dict1
+        print list1
+        # print '--x--'
+        # print indRespStart
+        # print forecastdate
+        # print forecasttime
+            #print forecastdate > currentdate
             # print time['parameters']
             # allParam = resp.json()['timeSeries'][0]['validTime']
             # allParam = 1
-
 
 def main():
     url = API_URL + '/category/' + CATEGORY + '/version/' + VERSION + '/geotype/' + GEOTYPE + '/lon/' + LON + '/lat/' + LAT + '/data.json'
